@@ -1,56 +1,19 @@
 import * as mongoose from 'mongoose';
 import { ProductSchema } from '../models/productModel';
 import { Request, Response } from 'express';
+import { BaseController } from './BaseController';
+mongoose.connect('mongodb://localhost:27017/myapp');
 
-const Contact = mongoose.model('Product', ProductSchema);
 
-export class ProductController{
+const Product = mongoose.model('Product', ProductSchema);
 
-    public addNewProduct (req: Request, res: Response) {                
-        let newContact = new Contact(req.body);
-    
-        newContact.save((err, contact) => {
-            if(err){
-                res.send(err);
-            }    
-            res.json(contact);
-        });
+export class ProductController extends BaseController {
+
+    constructor() {
+        super(Product);
     }
 
-    public getProducts (req: Request, res: Response) {           
-        Contact.find({}, (err, contact) => {
-            if(err){
-                res.send(err);
-            }
-            res.json(contact);
-        });
+    public addNewProduct(req: Request, res: Response) {
+        super.addNewItem(Product, req, res);
     }
-
-    public getProductWithID (req: Request, res: Response) {           
-        Contact.findById(req.params.contactId, (err, contact) => {
-            if(err){
-                res.send(err);
-            }
-            res.json(contact);
-        });
-    }
-
-    public updateProduct (req: Request, res: Response) {           
-        Contact.findOneAndUpdate({ _id: req.params.contactId }, req.body, { new: true }, (err, contact) => {
-            if(err){
-                res.send(err);
-            }
-            res.json(contact);
-        });
-    }
-
-    public deleteProduct (req: Request, res: Response) {           
-        Contact.remove({ _id: req.params.contactId }, (err, contact) => {
-            if(err){
-                res.send(err);
-            }
-            res.json({ message: 'Successfully deleted contact!'});
-        });
-    }
-    
 }
