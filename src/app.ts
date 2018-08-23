@@ -13,22 +13,22 @@ class App {
 
     constructor() {
         this.app = express();
-        this.config();        
-        this.productRoutes.routes(this.app);     
-        this.accountRoutes.routes(this.app);     
+        this.config();
+        this.productRoutes.routes(this.app);
+        this.accountRoutes.routes(this.app);
         this.mongoSetup();
     }
 
-    private config(): void{
+    private config(): void {
         this.app.use(bodyParser.json());
         this.app.use(bodyParser.urlencoded({ extended: false }));
         // serving static files 
         this.app.use(express.static('public'));
     }
 
-    private mongoSetup(): void{
-        mongoose.Promise = global.Promise;
-        mongoose.connect(this.mongoUrl);        
+    private mongoSetup(): void {
+        //mongoose.Promise = Promise;
+        mongoose.connect(this.mongoUrl);
     }
 
 }

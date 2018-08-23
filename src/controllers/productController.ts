@@ -45,7 +45,7 @@ export class ProductController{
     }
 
     public delete (req: Request, res: Response) {           
-        Product.remove({ _id: req.params.id }, (err, item) => {
+        Product.remove({ _id: req.params.id }, (err) => {
             if(err){
                 res.send(err);
             }

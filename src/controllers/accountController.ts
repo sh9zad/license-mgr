@@ -45,7 +45,7 @@ export class AccountController{
     }
 
     public delete (req: Request, res: Response) {           
-        Account.remove({ _id: req.params.id }, (err, item) => {
+        Account.remove({ _id: req.params.id }, (err) => {
             if(err){
                 res.send(err);
             }
