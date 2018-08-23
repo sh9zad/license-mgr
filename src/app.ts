@@ -1,26 +1,34 @@
 import * as express from "express";
 import * as bodyParser from "body-parser";
 import { ProductRoutes } from "./routes/productsRoutes";
-import { AccounteRoutes } from "./routes/accountRoutes";
+import { AccountRoutes } from "./routes/accountRoutes";
+import * as mongoose from "mongoose";
 
 class App {
 
     public app: express.Application;
-    public prodRoutes: ProductRoutes = new ProductRoutes();
-    public accountRoutes: AccounteRoutes = new AccounteRoutes();
+    public productRoutes: ProductRoutes = new ProductRoutes();
+    public accountRoutes: AccountRoutes = new AccountRoutes();
+    public mongoUrl: string = 'mongodb://localhost:27017/license_mgr';
 
     constructor() {
         this.app = express();
-        this.config();
-        this.prodRoutes.routes(this.app);
-        this.accountRoutes.routes(this.app);
+        this.config();        
+        this.productRoutes.routes(this.app);     
+        this.accountRoutes.routes(this.app);     
+        this.mongoSetup();
     }
 
-    private config(): void {
-        // support application/json type post data
+    private config(): void{
         this.app.use(bodyParser.json());
-        //support application/x-www-form-urlencoded post data
         this.app.use(bodyParser.urlencoded({ extended: false }));
+        // serving static files 
+        this.app.use(express.static('public'));
+    }
+
+    private mongoSetup(): void{
+        mongoose.Promise = global.Promise;
+        mongoose.connect(this.mongoUrl);        
     }
 
 }
