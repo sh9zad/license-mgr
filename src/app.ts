@@ -30,7 +30,7 @@ class App {
         this.app.use(cookieParser());
         //this.app.use(csrf({ cookie: false, ignoreMethods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTION'] }))
         this.app.use(function (req, res, next) {
-            console.log('we have been here');
+            // console.log('we have been here');
             res.header('Access-Control-Allow-Origin', '*');
             res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTION');
             res.header('Access-Control-Allow-Headers', 'Content-Type');
