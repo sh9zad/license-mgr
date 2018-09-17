@@ -2,7 +2,7 @@ import * as mongoose from 'mongoose';
 
 const Schema = mongoose.Schema;
 
-export const productLicenseSectionSchema = new Schema({
+export const ProductLicenseSectionSchema = new Schema({
     product_id: {
         type: Number,
         required: 'Enter a company name'

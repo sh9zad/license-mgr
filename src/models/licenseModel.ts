@@ -4,11 +4,11 @@ const Schema = mongoose.Schema;
 
 export const LicenseSchema = new Schema({
     account_id: {
-        type: Number,
+        type: String,
         required: 'Enter a company name'
     },
     product_id: {
-        type: Number,
+        type: String,
         required: 'Enter a client code'
     },
     license: {
