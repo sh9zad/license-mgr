@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { AccountController } from "../controllers/accountController";
+import { AccountController } from "../controllers";
 
 export class AccountRoutes {
   public controller: AccountController = new AccountController();
@@ -21,8 +21,6 @@ export class AccountRoutes {
       .put(this.controller.update)
       .delete(this.controller.delete);
 
-    app
-      .route("/account/details/:id")
-      .get(this.controller.getDetails);
+    app.route("/account/details/:id").get(this.controller.getDetails);
   }
 }

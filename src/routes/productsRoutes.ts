@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { ProductController } from "../controllers/productController";
+import { ProductController } from "../controllers";
 
 export class ProductRoutes {
   public controller: ProductController = new ProductController();

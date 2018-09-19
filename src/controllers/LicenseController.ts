@@ -1,19 +1,12 @@
 import * as mongoose from "mongoose";
+import { AccountSchema, LicenseSchema, ProductSchema } from "../models";
 import { Request, Response } from "express";
-import {
-  AccountSchema,
-  LicenseSchema,
-  ProductLicenseSectionSchema
-} from "../models";
 
 const Account = mongoose.model("Account", AccountSchema);
 const License = mongoose.model("License", LicenseSchema);
-const ProductLicense = mongoose.model(
-  "ProductLicense",
-  ProductLicenseSectionSchema
-);
+const Product = mongoose.model("Product", ProductSchema);
 
-export class AccountController {
+export class LicenseController {
   public addNew(req: Request, res: Response) {
     let newItem = new Account(req.body);
 
@@ -67,18 +60,26 @@ export class AccountController {
   }
 
   public getDetails(req: Request, res: Response) {
-    Account.findById(req.params.id, (err, account) => {
-      if (err) {
-        res.send(err);
-      }
-
-      License.find({ account_id: req.params.id }, (err, licenses) => {
+    let products = null;
+    let accounts = null;
+    if (req.params.method && req.params.method !== "product") {
+      products = Product.find({}, (err, items) => {
         if (err) {
           res.send(err);
         }
-
-        res.send({ account, licenses });
+        return items;
       });
-    });
+    }
+
+    if (req.params.method && req.params.method !== "account") {
+      accounts = Account.find({}, (err, items) => {
+        if (err) {
+          res.send(err);
+        }
+        return items;
+      });
+    }
+
+    res.send({ products, accounts });
   }
 }
