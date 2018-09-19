@@ -1,7 +1,9 @@
 import * as mongoose from "mongoose";
 import { AccountSchema, LicenseSchema, ProductSchema } from "../models";
 import { Request, Response } from "express";
+import * as Promise from "bluebird";
 
+Promise.promisifyAll(mongoose);
 const Account = mongoose.model("Account", AccountSchema);
 const License = mongoose.model("License", LicenseSchema);
 const Product = mongoose.model("Product", ProductSchema);
@@ -62,24 +64,12 @@ export class LicenseController {
   public getDetails(req: Request, res: Response) {
     let products = null;
     let accounts = null;
-    if (req.params.method && req.params.method !== "product") {
-      products = Product.find({}, (err, items) => {
-        if (err) {
-          res.send(err);
-        }
-        return items;
-      });
-    }
 
-    if (req.params.method && req.params.method !== "account") {
-      accounts = Account.find({}, (err, items) => {
-        if (err) {
-          res.send(err);
-        }
-        return items;
-      });
-    }
-
-    res.send({ products, accounts });
+    Promise.props({
+      products: Product.find({}),
+      accounts: Account.find({})
+    }).then(results => {
+      res.send(results);
+    });
   }
 }

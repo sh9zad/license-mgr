@@ -1,4 +1,3 @@
-import { Request, Response, NextFunction } from "express";
 import { LicenseController } from "../controllers";
 
 export class LicenseRoutes {
@@ -6,8 +5,8 @@ export class LicenseRoutes {
 
   public routes(app): void {
     app
-      .route("/license/:module?/:id?")
-      .get(this.controller.get)
+      .route("/license/:module*?/:id*?")
+      .get(this.controller.getDetails)
       .post(this.controller.addNew);
   }
 }
