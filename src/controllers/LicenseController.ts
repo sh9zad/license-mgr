@@ -62,14 +62,21 @@ export class LicenseController {
   }
 
   public getDetails(req: Request, res: Response) {
-    let products = null;
-    let accounts = null;
-
     Promise.props({
-      products: Product.find({}),
-      accounts: Account.find({})
-    }).then(results => {
-      res.send(results);
-    });
+      products:
+        req.params.module && req.params.module !== "account"
+          ? []
+          : Product.find({}),
+      accounts:
+        req.params.module && req.params.module !== "product"
+          ? []
+          : Account.find({})
+    })
+      .then(results => {
+        res.send(results);
+      })
+      .catch(err => {
+        res.send(err);
+      });
   }
 }
