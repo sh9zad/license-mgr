@@ -1,5 +1,11 @@
 import * as mongoose from "mongoose";
-import { AccountSchema, LicenseSchema, ProductSchema } from "../models";
+import {
+  AccountSchema,
+  LicenseSchema,
+  ProductSchema,
+  LicenseSectionSchema,
+  ProductLicenseSectionSchema
+} from "../models";
 import { Request, Response } from "express";
 import * as Promise from "bluebird";
 
@@ -7,6 +13,11 @@ Promise.promisifyAll(mongoose);
 const Account = mongoose.model("Account", AccountSchema);
 const License = mongoose.model("License", LicenseSchema);
 const Product = mongoose.model("Product", ProductSchema);
+const LicenseSection = mongoose.model("LicenseSection", LicenseSectionSchema);
+const ProductLicenseSection = mongoose.model(
+  "ProductLicenseSection",
+  ProductLicenseSectionSchema
+);
 
 export class LicenseController {
   public addNew(req: Request, res: Response) {
@@ -78,5 +89,33 @@ export class LicenseController {
       .catch(err => {
         res.send(err);
       });
+  }
+
+  public getSections(req: Request, res: Response) {
+    const { productId } = req.params;
+
+    ProductLicenseSection.find(
+      { product_id: productId },
+      (err, productLicenses) => {
+        if (err) {
+          res.send(err);
+        }
+
+        const sectionIDs = productLicenses.map(
+          pl => pl.toObject().license_section_id
+        );
+
+        LicenseSection.find(
+          { _id: { $in: sectionIDs } },
+          (err, licenseSections) => {
+            if (err) {
+              res.send(err);
+            }
+
+            res.send({ productLicenses, licenseSections });
+          }
+        );
+      }
+    );
   }
 }

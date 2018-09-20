@@ -4,11 +4,11 @@ const Schema = mongoose.Schema;
 
 export const ProductLicenseSectionSchema = new Schema({
     product_id: {
-        type: Number,
+        type: String,
         required: 'Enter a company name'
     },
     license_section_id: {
-        type: Number,
+        type: String,
         required: 'Enter a client code'
     },
     created_date: {
