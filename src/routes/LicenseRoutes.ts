@@ -5,10 +5,12 @@ export class LicenseRoutes {
 
   public routes(app): void {
     app
-      .route("/license/:module*?/:id*?")
-      .get(this.controller.getDetails)
-      .post(this.controller.addNew);
+      .route("/license/detail/:module*?/:id*?")
+      .get(this.controller.getDetails);
 
-    app.route("/license/section/:productId").get(this.controller.getSections);
+    app
+      .route("/license/section/:productId")
+      .get(this.controller.getSections)
+      .post(this.controller.addNewSection);
   }
 }

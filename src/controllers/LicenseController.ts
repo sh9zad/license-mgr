@@ -20,58 +20,6 @@ const ProductLicenseSection = mongoose.model(
 );
 
 export class LicenseController {
-  public addNew(req: Request, res: Response) {
-    let newItem = new Account(req.body);
-
-    newItem.save((err, item) => {
-      if (err) {
-        res.send(err);
-      }
-      res.json(item);
-    });
-  }
-
-  public get(req: Request, res: Response) {
-    Account.find({}, (err, item) => {
-      if (err) {
-        res.send(err);
-      }
-      res.json(item);
-    });
-  }
-
-  public getWithID(req: Request, res: Response) {
-    Account.findById(req.params.id, (err, item) => {
-      if (err) {
-        res.send(err);
-      }
-      res.json(item);
-    });
-  }
-
-  public update(req: Request, res: Response) {
-    Account.findOneAndUpdate(
-      { _id: req.params.id },
-      req.body,
-      { new: true },
-      (err, item) => {
-        if (err) {
-          res.send(err);
-        }
-        res.json(item);
-      }
-    );
-  }
-
-  public delete(req: Request, res: Response) {
-    Account.remove({ _id: req.params.id }, err => {
-      if (err) {
-        res.send(err);
-      }
-      res.json({ message: "Successfully deleted the item!" });
-    });
-  }
-
   public getDetails(req: Request, res: Response) {
     Promise.props({
       products:
@@ -93,6 +41,7 @@ export class LicenseController {
 
   public getSections(req: Request, res: Response) {
     const { productId } = req.params;
+    console.log(productId);
 
     ProductLicenseSection.find(
       { product_id: productId },
@@ -117,5 +66,22 @@ export class LicenseController {
         );
       }
     );
+  }
+
+  public addNewSection(req: Request, res: Response) {
+    const { productId } = req.params;
+    try {
+      Product.find({ _id: productId }, (err, product) => {
+        if (err) {
+          res.statusCode = 400;
+          res.send(err.message);
+        } else {
+          res.send("Done");
+        }
+      });
+    } catch (err) {
+      console.log("jkdfjkdkjdfjk");
+      res.send(err);
+    }
   }
 }
