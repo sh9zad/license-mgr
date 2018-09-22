@@ -7,9 +7,9 @@ import {
   ProductLicenseSectionSchema
 } from "../models";
 import { Request, Response } from "express";
-import * as Promise from "bluebird";
+import * as BPromise from "bluebird";
 
-Promise.promisifyAll(mongoose);
+BPromise.promisifyAll(mongoose);
 const Account = mongoose.model("Account", AccountSchema);
 const License = mongoose.model("License", LicenseSchema);
 const Product = mongoose.model("Product", ProductSchema);
@@ -21,7 +21,7 @@ const ProductLicenseSection = mongoose.model(
 
 export class LicenseController {
   public getDetails(req: Request, res: Response) {
-    Promise.props({
+    BPromise.props({
       products:
         req.params.module && req.params.module !== "account"
           ? []
@@ -68,20 +68,38 @@ export class LicenseController {
     );
   }
 
-  public addNewSection(req: Request, res: Response) {
+  public async addNewSection(req: Request, res: Response) {
     const { productId } = req.params;
-    try {
-      Product.find({ _id: productId }, (err, product) => {
-        if (err) {
-          res.statusCode = 400;
-          res.send(err.message);
-        } else {
-          res.send("Done");
-        }
+    const { sections } = req.body;
+    let newSections = [];
+
+    Product.findById(productId)
+      .then(() => {
+        LicenseSection.insertMany(sections)
+          .then(result => {
+            newSections = JSON.parse(JSON.stringify(result));
+
+            for (const section of newSections) {
+              const prodLice = new ProductLicenseSection({
+                product_id: productId,
+                license_section_id: section._id
+              });
+
+              prodLice.save();
+            }
+
+            res.send(newSections);
+          })
+          .catch(err => {
+            console.error(err);
+            res.statusCode = 500;
+            res.send(err.message);
+          });
+      })
+      .catch(err => {
+        console.error(err);
+        res.statusCode = 500;
+        res.send(err.message);
       });
-    } catch (err) {
-      console.log("jkdfjkdkjdfjk");
-      res.send(err);
-    }
   }
 }
