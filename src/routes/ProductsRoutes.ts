@@ -10,22 +10,19 @@ export class ProductRoutes {
         message: "GET request successfulll!!!!"
       });
     });
-
-    // Contact
     app
       .route("/product")
       .get((req: Request, res: Response, next: NextFunction) => {
         next();
       }, this.controller.get)
-
-      // POST endpoint
       .post(this.controller.addNew);
 
-    // Contact detail
     app
       .route("/product/:id")
       .get(this.controller.getWithID)
       .put(this.controller.update)
       .delete(this.controller.delete);
+
+    app.route("/product/details/:productId").get(this.controller.getDetails);
   }
 }

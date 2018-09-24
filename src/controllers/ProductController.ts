@@ -1,10 +1,20 @@
 import * as mongoose from "mongoose";
-import { ProductSchema } from "../models";
+import {
+  ProductSchema,
+  ProductLicenseSectionSchema,
+  LicenseSectionSchema
+} from "../models";
 import { Request, Response } from "express";
+import { BaseController } from "./BaseController";
 
 const Product = mongoose.model("Product", ProductSchema);
+const ProductLicenseSection = mongoose.model(
+  "ProductLicenseSection",
+  ProductLicenseSectionSchema
+);
+const LicenseSection = mongoose.model("LicenseSection", LicenseSectionSchema);
 
-export class ProductController {
+export class ProductController extends BaseController {
   public addNew(req: Request, res: Response) {
     let newItem = new Product(req.body);
 
@@ -54,6 +64,33 @@ export class ProductController {
         res.send(err);
       }
       res.json({ message: "Successfully deleted the item!" });
+    });
+  }
+
+  public getDetails(req: Request, res: Response) {
+    const { productId } = req.params;
+
+    Product.findById(productId, (err, product) => {
+      if (err) {
+        this.returnError(res, err);
+      }
+
+      ProductLicenseSection.find(
+        { product_id: productId },
+        (err, productSections) => {
+          if (err) {
+            this.returnError(res, err);
+          }
+
+          LicenseSection.find({}, (err, licenseSections) => {
+            if (err) {
+              this.returnError(res, err);
+            }
+
+            res.send({ product, productSections, licenseSections });
+          });
+        }
+      );
     });
   }
 }
