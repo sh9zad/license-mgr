@@ -4,7 +4,7 @@ export class LicenseRoutes {
   public controller: LicenseController = new LicenseController();
 
   public routes(app): void {
-    app.route("/license/:id").get(this.controller.get);
+    app.route("/license/:id").get(this.controller.findWithID);
 
     app
       .route("/license/detail/:module*?/:id*?")

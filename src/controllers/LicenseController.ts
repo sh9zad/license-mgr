@@ -21,8 +21,8 @@ const ProductLicenseSection = mongoose.model(
 );
 
 export class LicenseController extends BaseController {
-  public get(req: Request, res: Response) {
-    LicenseSection.find({}, (err, sections) => {
+  public findWithID(req: Request, res: Response) {
+    LicenseSection.findById(req.params.id, (err, sections) => {
       if (err) {
         this.returnError(res, err);
       }
