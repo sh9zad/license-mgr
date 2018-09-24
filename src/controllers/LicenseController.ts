@@ -8,6 +8,7 @@ import {
 } from "../models";
 import { Request, Response } from "express";
 import * as BPromise from "bluebird";
+import { BaseController } from "./BaseController";
 
 BPromise.promisifyAll(mongoose);
 const Account = mongoose.model("Account", AccountSchema);
@@ -19,7 +20,17 @@ const ProductLicenseSection = mongoose.model(
   ProductLicenseSectionSchema
 );
 
-export class LicenseController {
+export class LicenseController extends BaseController {
+  public get(req: Request, res: Response) {
+    LicenseSection.find({}, (err, sections) => {
+      if (err) {
+        this.returnError(res, err);
+      }
+
+      res.send(sections);
+    });
+  }
+
   public getDetails(req: Request, res: Response) {
     BPromise.props({
       products:
