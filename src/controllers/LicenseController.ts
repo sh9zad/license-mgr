@@ -113,4 +113,18 @@ export class LicenseController extends BaseController {
         res.send(err.message);
       });
   }
+
+  public updateSection(req: Request, res: Response) {
+    console.log(req.params.productId);
+    LicenseSection.findOneAndUpdate(
+      { _id: req.params.productId },
+      (err, section) => {
+        if (err) {
+          this.returnError(res, err);
+        }
+
+        res.send(section);
+      }
+    );
+  }
 }

@@ -13,6 +13,7 @@ export class LicenseRoutes {
     app
       .route("/license/section/:productId")
       .get(this.controller.getSections)
+      .put(this.controller.updateSection)
       .post(this.controller.addNewSection);
   }
 }
