@@ -10,6 +10,8 @@ export class LicenseRoutes {
       .route("/license/detail/:module*?/:id*?")
       .get(this.controller.getDetails);
 
+    app.route("/license/section/all/").get(this.controller.getAllSections);
+
     app
       .route("/license/section/:productId")
       .get(this.controller.getSections)

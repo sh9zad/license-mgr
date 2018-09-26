@@ -24,7 +24,7 @@ export class LicenseController extends BaseController {
   public findWithID(req: Request, res: Response) {
     LicenseSection.findById(req.params.id, (err, sections) => {
       if (err) {
-        this.returnError(res, err);
+        BaseController.returnError(res, err);
       }
 
       res.send(sections);
@@ -79,6 +79,17 @@ export class LicenseController extends BaseController {
     );
   }
 
+  public getAllSections(req: Request, res: Response) {
+    LicenseSection.find({}, (err, sections) => {
+      if (err) {
+        res.statusCode = 500;
+        res.send(err.message);
+      }
+
+      res.send(sections);
+    });
+  }
+
   public async addNewSection(req: Request, res: Response) {
     const { productId } = req.params;
     const { sections } = req.body;
@@ -122,7 +133,7 @@ export class LicenseController extends BaseController {
       { new: true },
       (err, item) => {
         if (err) {
-          this.returnError(res, err);
+          BaseController.returnError(res, err);
         }
         res.send(item);
       }

@@ -72,19 +72,19 @@ export class ProductController extends BaseController {
 
     Product.findById(productId, (err, product) => {
       if (err) {
-        this.returnError(res, err);
+        BaseController.returnError(res, err);
       }
 
       ProductLicenseSection.find(
         { product_id: productId },
         (err, productSections) => {
           if (err) {
-            this.returnError(res, err);
+            BaseController.returnError(res, err);
           }
 
           LicenseSection.find({}, (err, licenseSections) => {
             if (err) {
-              this.returnError(res, err);
+              BaseController.returnError(res, err);
             }
 
             res.send({ product, productSections, licenseSections });
