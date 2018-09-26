@@ -115,15 +115,16 @@ export class LicenseController extends BaseController {
   }
 
   public updateSection(req: Request, res: Response) {
-    console.log(req.params.productId);
-    LicenseSection.findOneAndUpdate(
-      { _id: req.params.productId },
-      (err, section) => {
+    console.log("updateSection", req.params);
+    LicenseSection.findByIdAndUpdate(
+      req.params.productId,
+      req.body,
+      { new: true },
+      (err, item) => {
         if (err) {
           this.returnError(res, err);
         }
-
-        res.send(section);
+        res.send(item);
       }
     );
   }
