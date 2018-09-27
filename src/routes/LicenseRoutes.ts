@@ -17,5 +17,9 @@ export class LicenseRoutes {
       .get(this.controller.getSections)
       .put(this.controller.updateSection)
       .post(this.controller.addNewSection);
+
+    app
+      .route("/license/section/relate/:module/:id")
+      .post(this.controller.relateSectionProduct);
   }
 }

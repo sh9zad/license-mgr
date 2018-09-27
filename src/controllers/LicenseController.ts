@@ -139,4 +139,31 @@ export class LicenseController extends BaseController {
       }
     );
   }
+
+  public relateSectionProduct(req: Request, res: Response) {
+    const sectionIds: string[] = req.body;
+    const prodLicSecs: any[] = sectionIds.map((sectionId: string) => {
+      return { product_id: req.params.id, license_section_id: sectionId };
+    });
+    console.log(prodLicSecs);
+    Product.findById(req.params.id, (err, product) => {
+      if (err) {
+        res.statusCode = 500;
+        res.send(err.message);
+      }
+
+      ProductLicenseSection.insertMany(
+        prodLicSecs,
+        { ordered: false },
+        (err, items) => {
+          if (err) {
+            res.statusCode = 500;
+            res.send(err.message);
+          }
+
+          res.send(items);
+        }
+      );
+    });
+  }
 }
