@@ -145,7 +145,7 @@ export class LicenseController extends BaseController {
     const prodLicSecs: any[] = sectionIds.map((sectionId: string) => {
       return { product_id: req.params.id, license_section_id: sectionId };
     });
-    console.log(prodLicSecs);
+
     Product.findById(req.params.id, (err, product) => {
       if (err) {
         res.statusCode = 500;
@@ -162,6 +162,35 @@ export class LicenseController extends BaseController {
           }
 
           res.send(items);
+        }
+      );
+    });
+  }
+
+  public getInitCreateData(req: Request, res: Response) {
+    Product.find({}, (err, products) => {
+      if (err) {
+        res.statusCode = 500;
+        res.send(err.message);
+      }
+
+      const productIds: mongoose.Types.ObjectId[] = products.map(product => {
+        return new mongoose.Types.ObjectId(product.id);
+      });
+
+      console.log(productIds);
+
+      ProductLicenseSection.find(
+        { product_id: { $in: productIds } },
+        (err, prodLiceSec) => {
+          if (err) {
+            res.statusCode = 500;
+            res.send(err.message);
+          }
+
+          console.log(prodLiceSec);
+
+          res.send("something");
         }
       );
     });

@@ -21,5 +21,7 @@ export class LicenseRoutes {
     app
       .route("/license/section/relate/:module/:id")
       .post(this.controller.relateSectionProduct);
+
+    app.route("/license/init/get").get(this.controller.getInitCreateData);
   }
 }
