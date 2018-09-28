@@ -22,5 +22,9 @@ export class AccountRoutes {
       .delete(this.controller.delete);
 
     app.route("/account/details/:id").get(this.controller.getDetails);
+
+    app
+      .route("/account/create/license/:accountId/:productId")
+      .post(this.controller.generateLicense);
   }
 }

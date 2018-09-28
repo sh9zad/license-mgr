@@ -3,11 +3,16 @@ import { Request, Response } from "express";
 import {
   AccountSchema,
   LicenseSchema,
-  ProductLicenseSectionSchema
+  ProductLicenseSectionSchema,
+  LicenseSectionSchema
 } from "../models";
 
 const Account = mongoose.model("Account", AccountSchema);
 const License = mongoose.model("License", LicenseSchema);
+const LicenseSectionRelate = mongoose.model(
+  "LicenseLicenseSection",
+  LicenseSectionSchema
+);
 const ProductLicense = mongoose.model(
   "ProductLicense",
   ProductLicenseSectionSchema
@@ -79,6 +84,49 @@ export class AccountController {
 
         res.send({ account, licenses });
       });
+    });
+  }
+
+  public generateLicense(req: Request, res: Response) {
+    const licenseValues = {
+      account_id: req.params.accountId,
+      product_id: req.params.productId,
+      license: req.params.productId + " " + req.params.accountId
+    };
+
+    const sections: string[] = req.body;
+
+    const newLicense = new License(licenseValues);
+    newLicense.save((err, license) => {
+      if (err) {
+        res.statusCode = 500;
+        res.send(err.message);
+      }
+
+      const licenseSections = sections.map(section => {
+        return {
+          license_id: license._id,
+          license_section_id: section,
+          section_value: ""
+        };
+      });
+
+      LicenseSectionRelate.insertMany(
+        licenseSections,
+        { ordered: false },
+        (err, lisSecs) => {
+          if (err) {
+            res.statusCode = 500;
+            res.send(err.message);
+          }
+
+          if (lisSecs) {
+            res.send(JSON.stringify("success"));
+          } else {
+            res.send(JSON.stringify("error"));
+          }
+        }
+      );
     });
   }
 }
