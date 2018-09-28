@@ -80,20 +80,30 @@ export class AccountController {
         res.send(err.message);
       }
 
-      License.find({ account_id: req.params.id }, (err, licenses) => {
-        if (err) {
-          res.statusCode = 500;
-          res.send(err.message);
-        }
+      License.find({ account_id: req.params.id })
+        .lean()
+        .exec((err, licenses) => {
+          if (err) {
+            res.statusCode = 500;
+            res.send(err.message);
+          }
 
-        const licenseIds
+          const licenseIds: string[] = licenses.map(license => {
+            return license._id;
+          });
 
-        LicenseSectionRelate.find({}, (err, sections) => {
+          LicenseSectionRelate.find({ license_id: { $in: licenseIds } })
+            .lean()
+            .exec((err, sections) => {
+              if (err) {
+                res.statusCode = 500;
+                res.send(err.message);
+              }
+              const sectionIds = sections.map(section => {return section.license_section_id});
+            });
 
-        })
-
-        res.send({ account, licenses });
-      });
+          res.send({ account, licenses });
+        });
     });
   }
 
