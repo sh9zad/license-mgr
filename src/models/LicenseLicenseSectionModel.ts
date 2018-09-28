@@ -2,7 +2,7 @@ import * as mongoose from "mongoose";
 
 const Schema = mongoose.Schema;
 
-export const ProductLicenseSectionSchema = new Schema({
+export const LicenseLicenseSectionSchema = new Schema({
   license_id: {
     type: String,
     required: "Enter a company name"

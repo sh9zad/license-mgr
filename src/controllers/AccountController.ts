@@ -4,14 +4,16 @@ import {
   AccountSchema,
   LicenseSchema,
   ProductLicenseSectionSchema,
-  LicenseSectionSchema
+  LicenseLicenseSectionSchema,
+  ProductSchema
 } from "../models";
 
 const Account = mongoose.model("Account", AccountSchema);
+const Product = mongoose.model("Product", ProductSchema);
 const License = mongoose.model("License", LicenseSchema);
 const LicenseSectionRelate = mongoose.model(
   "LicenseLicenseSection",
-  LicenseSectionSchema
+  LicenseLicenseSectionSchema
 );
 const ProductLicense = mongoose.model(
   "ProductLicense",
@@ -74,13 +76,21 @@ export class AccountController {
   public getDetails(req: Request, res: Response) {
     Account.findById(req.params.id, (err, account) => {
       if (err) {
-        res.send(err);
+        res.statusCode = 500;
+        res.send(err.message);
       }
 
       License.find({ account_id: req.params.id }, (err, licenses) => {
         if (err) {
-          res.send(err);
+          res.statusCode = 500;
+          res.send(err.message);
         }
+
+        const licenseIds
+
+        LicenseSectionRelate.find({}, (err, sections) => {
+
+        })
 
         res.send({ account, licenses });
       });
