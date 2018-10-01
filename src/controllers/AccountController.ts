@@ -5,12 +5,14 @@ import {
   LicenseSchema,
   ProductLicenseSectionSchema,
   LicenseLicenseSectionSchema,
+  LicenseSectionSchema,
   ProductSchema
 } from "../models";
 
 const Account = mongoose.model("Account", AccountSchema);
 const Product = mongoose.model("Product", ProductSchema);
 const License = mongoose.model("License", LicenseSchema);
+const LicenseSection = mongoose.model("LicenseSection", LicenseSectionSchema);
 const LicenseSectionRelate = mongoose.model(
   "LicenseLicenseSection",
   LicenseLicenseSectionSchema
@@ -92,6 +94,8 @@ export class AccountController {
             return license._id;
           });
 
+          console.log(licenseIds);
+
           LicenseSectionRelate.find({ license_id: { $in: licenseIds } })
             .lean()
             .exec((err, sections) => {
@@ -99,10 +103,22 @@ export class AccountController {
                 res.statusCode = 500;
                 res.send(err.message);
               }
-              const sectionIds = sections.map(section => {return section.license_section_id});
-            });
+              const sectionIds = sections.map(section => {
+                return section.license_section_id;
+              });
 
-          res.send({ account, licenses });
+              LicenseSection.find(
+                { _id: { $in: sectionIds } },
+                (err, licSection) => {
+                  if (err) {
+                    res.statusCode = 500;
+                    res.send(err.message);
+                  }
+
+                  res.send({ account, licenses, sections, licSection });
+                }
+              );
+            });
         });
     });
   }
